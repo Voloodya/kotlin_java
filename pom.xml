@@ -23,9 +23,12 @@
         <!-- https://kotlinlang.org/docs/maven-compile-package.html#specify-compiler-options-->
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <kotlin.compiler.languageVersion>2.3</kotlin.compiler.languageVersion>
+
+        <spring-boot.version>3.4.4</spring-boot.version>
     </properties>
 
     <dependencies>
+        <!-- kotlin begin -->
         <!-- Dependency on the standard library-->
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
@@ -34,13 +37,11 @@
                 specified in <properties/>: -->
             <version>${kotlin.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.jetbrains.kotlinx</groupId>
             <artifactId>kotlinx-serialization-json</artifactId>
             <version>${kotlinx.serialization.json.version}</version>
         </dependency>
-
     <!--Dependencies on test libraries-->
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
@@ -52,7 +53,6 @@
             <artifactId>kotlin-test-junit5</artifactId>
             <scope>test</scope>
         </dependency>
-
     <!--Dependency on a kotlinx library﻿-->
     <!--For kotlinx libraries, you can either add the base artifact name or the name with a -jvm suffix.
      Refer to the library's README file on https://klibs.io/?_gl=1*1mpg55d*_gcl_au*NzAzMzYxOTc4LjE3NzM2NDIwMzQ.*_ga*MTkxNDY0OTY5LjE3NzM2NDIwMzQ.*_ga_9J976DJZ68*czE3NzM2NDYwODEkbzIkZzAkdDE3NzM2NDYwODEkajYwJGwwJGgw.-->
@@ -62,13 +62,25 @@
             <artifactId>kotlinx-coroutines-core</artifactId>
             <version>${kotlinx.coroutines.version}</version>
         </dependency>
-
-    <!-- Dependency on the kotlinx-datetime library-->
+        <!-- Dependency on the kotlinx-datetime library-->
         <dependency>
             <groupId>org.jetbrains.kotlinx</groupId>
             <artifactId>kotlinx-datetime-jvm</artifactId>
             <version>${kotlinx.datetime.jvm.version}</version>
         </dependency>
+        <!-- kotlin end -->
+
+        <!-- spring boot begin-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- spring boot end-->
     </dependencies>
 
     <!-- Kotlin Bill of Materials (BOM), add a dependency on kotlin-bom-->
@@ -81,6 +93,14 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -89,6 +109,16 @@
         <!-- Configure source code compilation-->
         <!-- Compile Kotlin and Java sources https://kotlinlang.org/docs/maven-compile-package.html#compile-kotlin-and-java-sources -->
         <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot.version}</version>
+                <configuration>
+                    <executable>false</executable>
+                    <excludeDevtools>true</excludeDevtools>
+                    <mainClass>com.kotlin.java.KotlinJavaApplication</mainClass>
+                </configuration>
+            </plugin>
             <!-- Kotlin compiler plugin configuration -->
             <!-- Данная конфигурация гарантирует, что:-->
             <!-- Сначала компилируется код на Kotlin.-->
@@ -105,9 +135,9 @@
                         <phase>compile</phase>
                         <configuration>
                             <sourceDirs>
-                                <sourceDir>src/main/kotlin</sourceDir>
+                                <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
                                 <!-- Ensure Kotlin code can reference Java code -->
-                                <sourceDir>src/main/java</sourceDir>
+                                <sourceDir>${project.basedir}/src/main/java</sourceDir>
                             </sourceDirs>
                         </configuration>
                     </execution>
@@ -116,8 +146,9 @@
                         <phase>test-compile</phase>
                         <configuration>
                             <sourceDirs>
-                                <sourceDir>src/test/kotlin</sourceDir>
-                                <sourceDir>src/test/java</sourceDir>
+                                <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
+                                <!-- Ensure Kotlin code can reference Java code -->
+                                <sourceDir>${project.basedir}/src/main/java</sourceDir>
                             </sourceDirs>
                         </configuration>
                     </execution>
@@ -133,6 +164,26 @@
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>default-testCompile</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>java-compile</id>
+                        <phase>compile</phase>
+                        <goals> <goal>compile</goal> </goals>
+                    </execution>
+                    <execution>
+                        <id>java-test-compile</id>
+                        <phase>test-compile</phase>
+                        <goals> <goal>testCompile</goal> </goals>
+                    </execution>
+                </executions>
             </plugin>
 
         <!-- Create self-contained JAR files-->
