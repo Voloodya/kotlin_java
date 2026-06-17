@@ -8,8 +8,15 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.5.13</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
     <properties>
-        <java.version>17</java.version>
+        <java.version>26</java.version>
         <kotlin.version>2.3.10</kotlin.version>
         <kotlinx.serialization.json.version>1.10.0</kotlinx.serialization.json.version>
         <kotlinx.coroutines.version>1.10.2</kotlinx.coroutines.version>
@@ -24,7 +31,7 @@
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <kotlin.compiler.languageVersion>2.3</kotlin.compiler.languageVersion>
 
-        <spring-boot.version>3.4.4</spring-boot.version>
+        <spring-boot.version>3.5.13</spring-boot.version>
     </properties>
 
     <dependencies>
@@ -42,7 +49,7 @@
             <artifactId>kotlinx-serialization-json</artifactId>
             <version>${kotlinx.serialization.json.version}</version>
         </dependency>
-    <!--Dependencies on test libraries-->
+    <!--Dependencies on test libraries Kotlin-->
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-reflect</artifactId>
@@ -80,7 +87,21 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
         <!-- spring boot end-->
+
+        <!-- Other -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.36</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Other End -->
     </dependencies>
 
     <!-- Kotlin Bill of Materials (BOM), add a dependency on kotlin-bom-->
